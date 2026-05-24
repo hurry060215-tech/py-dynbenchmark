@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pydynbenchmark"
+version = "0.1.0"
+description = "Trajectory inference benchmarking — Python implementation of dyneval-family metrics + synthetic generators (Saelens et al. Nat Biotechnol 2019)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Zehua Zeng", email = "starlitnightly@163.com" }]
+dependencies = [
+    "numpy>=1.23",
+    "scipy>=1.10",
+    "pandas>=1.5",
+    "scikit-learn>=1.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/omicverse/py-dynbenchmark"
+
+[tool.setuptools.packages.find]
+include = ["pydynbenchmark*"]
+exclude = ["tests*", "examples*", "dyneval-ref*", "dynwrap-ref*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning", "ignore::RuntimeWarning"]
