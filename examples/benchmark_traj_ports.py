@@ -61,7 +61,8 @@ def adapter_tscan(ds):
                         columns=[f"c{i}" for i in range(ds.counts.shape[0])])
     res = pytscan.exprmclust(expr)
     order = pytscan.TSCANorder(res, orderonly=True)
-    cell_to_t = {cid: i / len(order.cell_order) for i, cid in enumerate(order.cell_order)}
+    cell_to_t = {cid: i / max(len(order.ordered_names) - 1, 1)
+                 for i, cid in enumerate(order.ordered_names)}
     pt = np.array([cell_to_t.get(c, np.nan) for c in expr.columns])
     # Fill NaN with median for fair comparison
     if np.any(np.isnan(pt)):
@@ -120,6 +121,8 @@ def adapter_monocle3(ds):
     adata = ad.AnnData(X=ds.counts.astype(np.float32))
     adata.obs_names = ds.cell_ids
     adata.var_names = [f"g{i}" for i in range(ds.counts.shape[1])]
+    from monocle3 import estimate_size_factors
+    estimate_size_factors(adata)
     m3.preprocess_cds(adata, num_dim=min(20, ds.counts.shape[1] - 1))
     m3.reduce_dimension(adata, max_components=2, umap_min_dist=0.1)
     m3.cluster_cells(adata)
